@@ -1,9 +1,9 @@
-package net.tfobz.vokabeltrainer.model;
+package it.tfobz.jj_zp.vokabeltrainer;
 
 import java.util.Hashtable;
 
 /**
- * Bei einer Lernkartei müssen die Beschreibung sowie die Beschreibung der beiden Wörter eingegeben werden 
+ * Bei einer Lernkartei mï¿½ssen die Beschreibung sowie die Beschreibung der beiden Wï¿½rter eingegeben werden 
  * @author Michael
  */
 public class Lernkartei

@@ -1,4 +1,4 @@
-package net.tfobz.vokabeltrainer.model;
+package it.tfobz.jj_zp.vokabeltrainer;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -93,7 +93,7 @@ import java.util.List;
       if (instanz == null) {
         instanz = new VokabeltrainerDB(context);
         // Schaltet die Fremdschlüsselunterstützung in SQLite ein
-        instanz.getReadableDatabase().execSQL("PRAGMA foreign_keys = ON");
+        instanz.getReadableDatabase().execSQL("PRAGMA foreign_keys = 'ON'");
       }
       ret = instanz;
       return ret;

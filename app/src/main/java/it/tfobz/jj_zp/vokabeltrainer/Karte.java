@@ -1,11 +1,11 @@
-package net.tfobz.vokabeltrainer.model;
+package it.tfobz.jj_zp.vokabeltrainer;
 
 import java.util.Hashtable;
 
 /**
- * Stellt eine Karte dar, welche zwei Wörter, eine Abfragerichtung und die Information ob beim Vergleichen
- * der Wörter die Groß-/Kleinschreibung berücksichtigt werden soll, enthält. Bei einer Karte müssen
- * die beiden Wörter eingegeben worden sein
+ * Stellt eine Karte dar, welche zwei Wï¿½rter, eine Abfragerichtung und die Information ob beim Vergleichen
+ * der Wï¿½rter die Groï¿½-/Kleinschreibung berï¿½cksichtigt werden soll, enthï¿½lt. Bei einer Karte mï¿½ssen
+ * die beiden Wï¿½rter eingegeben worden sein
  * @author Michael
  */
 public class Karte 
@@ -68,8 +68,8 @@ public class Karte
   }
   
   /**
-   * Liefert in Abhängigkeit der eingestellten Fragerichtung und in Abhängigkeit ob die Groß-/Kleinschreibung
-   * berücksichtigt werden soll ob das eingegebene Wort dem gesuchten Wort entspricht
+   * Liefert in Abhï¿½ngigkeit der eingestellten Fragerichtung und in Abhï¿½ngigkeit ob die Groï¿½-/Kleinschreibung
+   * berï¿½cksichtigt werden soll ob das eingegebene Wort dem gesuchten Wort entspricht
    * @param wort
    * @return
    */

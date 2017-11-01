@@ -1,4 +1,4 @@
-package net.tfobz.vokabeltrainer.model;
+package it.tfobz.jj_zp.vokabeltrainer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,12 +7,12 @@ import java.util.Hashtable;
 
 
 /**
- * Stellt ein Fach dar, welches viele Karten enthalten kann. Das Fach enthält das Datum an welchem
- * zuletzt in ihm gelernt wurde. erinnerung legt fest, wie viele Tage vergehen müssen seit dem
+ * Stellt ein Fach dar, welches viele Karten enthalten kann. Das Fach enthï¿½lt das Datum an welchem
+ * zuletzt in ihm gelernt wurde. erinnerung legt fest, wie viele Tage vergehen mï¿½ssen seit dem
  * letzten Lernen bis eine Erinnerung geworfen wird. Beispielsweise bedeutet eine 1, dass eine
  * Erinnerung geworfen wird, wenn zum letzten Mal gestern gelernt wurde. Ist erinnerung 0 so wird
- * nie eine Erinnerung geworfen. Wird dem Fach keine Beschreibung gegeben, so erhält das Fach
- * beim Hinzufügen zur Datenbank die Beschreibung "Fach <Nummer>" wobei <Nummer> die fortlaufende 
+ * nie eine Erinnerung geworfen. Wird dem Fach keine Beschreibung gegeben, so erhï¿½lt das Fach
+ * beim Hinzufï¿½gen zur Datenbank die Beschreibung "Fach <Nummer>" wobei <Nummer> die fortlaufende 
  * Nummer des Faches in der Lernkartei ist
  * @author Michael
  */
