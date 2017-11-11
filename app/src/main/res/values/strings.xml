@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Vokabeltrainer</string>
+    <string name="action_options">Optionen</string>
+    <string name="action_about">Über</string>
 </resources>
