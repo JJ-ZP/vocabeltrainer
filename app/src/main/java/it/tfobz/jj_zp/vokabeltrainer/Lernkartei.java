@@ -8,6 +8,8 @@ import java.util.Hashtable;
  */
 public class Lernkartei
 {
+	public static int lernkarteiID = 0;
+
 	protected int nummer = -1;
 	protected String beschreibung = null;
 	protected String wortEinsBeschreibung = null;

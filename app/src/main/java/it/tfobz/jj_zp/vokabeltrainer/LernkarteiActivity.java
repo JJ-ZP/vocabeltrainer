@@ -1,9 +1,10 @@
 package it.tfobz.jj_zp.vokabeltrainer;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,25 +15,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class LernkarteiActivity extends AppCompatActivity {
 
     private VokabeltrainerDB vokabeltrainerDB;
     private RecyclerView recyclerView;
-    private LernkarteiAdapter lernkarteiAdapter;
+    private CardAdapter lernkarteiAdapter;
+    private int lernkarteinummer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lernkartei);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         vokabeltrainerDB = VokabeltrainerDB.getInstance(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.LernkarteienList);
+        recyclerView = findViewById(R.id.listCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        lernkarteiAdapter = new LernkarteiAdapter(vokabeltrainerDB);
+        lernkarteinummer = getIntent().getIntExtra("it.tfobz.jj_zp.vokabeltrainer.KarteiId", 0);
+        lernkarteiAdapter = new CardAdapter(vokabeltrainerDB, lernkarteinummer);
         recyclerView.setAdapter(lernkarteiAdapter);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
@@ -45,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Lernkartei wirklich löschen?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(LernkarteiActivity.this);
+                builder.setTitle("Karte wirklich löschen?");
                 builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int pos = viewHolder.getAdapterPosition();
-                        vokabeltrainerDB.loeschenLernkartei(vokabeltrainerDB.getLernkarteien().get(pos).getNummer());
+                        vokabeltrainerDB.loeschenKarte(vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos).getNummer());
                         lernkarteiAdapter.notifyDataSetChanged();
                     }
                 });
@@ -69,45 +75,24 @@ public class MainActivity extends AppCompatActivity {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu , menu);
-        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
-            case R.id.menu_options:
-                intent = new Intent(this, Optionen.class);
-                startActivity(intent);
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
-            case R.id.menu_about:
-                intent = new Intent(this, Ueber.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        NotificationManager nMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nMgr.cancelAll();
-    }
-
-    public void startAddLernKarteiDialog(final View view){
+    public void startAddCardDialog(final View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = View.inflate(view.getContext(), R.layout.lernkartei_dialog, null);
+        final View v = View.inflate(view.getContext(), R.layout.card_dialog, null);
         builder.setView(v);
-        builder.setTitle("Lernkartei hinzufügen");
+        builder.setTitle("Karte hinzufügen");
         builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -117,30 +102,18 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Hinzufügen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                EditText vorneTE = v.findViewById(R.id.cardVorne);
+                EditText hintenTE = v.findViewById(R.id.cardHinten);
+                Switch grossKleinTgl = v.findViewById(R.id.cardGrossKleinTgl);
 
-                EditText nameTE = v.findViewById(R.id.lernkarteiName);
-                EditText word1TE = v.findViewById(R.id.lernkarteiWort1);
-                EditText word2TE = v.findViewById(R.id.lernkarteiWort2);
-                EditText anzahlFaecherTE = v.findViewById(R.id.lernkarteiFaecher);
-
-                Log.i("LLOG", nameTE.getText().toString() + " // " +
-                       word1TE.getText().toString()  + " // " +
-                       word2TE.getText().toString()  + " // " +
-                       anzahlFaecherTE.getText().toString());
-
-                Lernkartei lernkartei = new Lernkartei(-1, nameTE.getText().toString(),
-                        word1TE.getText().toString(), word2TE.getText().toString(), false,
-                        false);
-                lernkartei.validiere();
-                if(lernkartei.getFehler() == null){
+                Karte karte = new Karte(-1, vorneTE.getText().toString(), hintenTE.getText().toString(),
+                        false, grossKleinTgl.isChecked());
+                karte.validiere();
+                if(karte.getFehler() == null){
                     VokabeltrainerDB vokabeltrainerDB = VokabeltrainerDB.getInstance(view.getContext());
-                    if(vokabeltrainerDB.hinzufuegenLernkartei(lernkartei) == 0){
-                        for(int k = 0; k < Integer.parseInt(anzahlFaecherTE.getText().toString()); k++){
-                            vokabeltrainerDB.hinzufuegenFach(lernkartei.getNummer(),
-                                    new Fach(-1, "Fach #"+k, (int) Math.pow(2, k), null));
-                        }
+                    if(vokabeltrainerDB.hinzufuegenKarte(lernkarteinummer, karte) == 0){
                         lernkarteiAdapter.notifyDataSetChanged();
-                        Toast.makeText(view.getContext(), "Lernkartei hinzugefügt", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "Karte hinzugefügt", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(view.getContext(), "Fehler beim Speichern", Toast.LENGTH_SHORT).show();
                     }

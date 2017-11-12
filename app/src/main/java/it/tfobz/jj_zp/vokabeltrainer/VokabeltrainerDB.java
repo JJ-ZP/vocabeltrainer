@@ -115,6 +115,18 @@ import java.util.List;
     }
 
 
+    //--------------------------------------> OWN
+
+    public ArrayList<Karte> getAllKarten(int lernkarteinummer){
+      ArrayList<Karte> karten = new ArrayList<Karte>();
+      for (Fach f : getFaecher(lernkarteinummer)) {
+        karten.addAll(getKarten(f.getNummer()));
+      }
+      return karten;
+    }
+
+    //--------------------------------------> END
+
     public void erstellenTabellen() {
       SQLiteDatabase db = getReadableDatabase();
       db.execSQL(CREATE_LERNKARTEIEN);
@@ -672,6 +684,7 @@ import java.util.List;
                         "Es existiert bereits Lernkartei mit gleicher Beschreibung");
                 ret = -2;
             } else {
+                Log.e("LLOG", e.getMessage());
                 ret = -1;
             }
         } finally {
@@ -746,6 +759,13 @@ import java.util.List;
      * aufgetreten ist
      */
     public int loeschenLernkartei(int nummerLernkartei) {
+
+        for(Karte k : getAllKarten(nummerLernkartei)){
+          loeschenKarte(k.getNummer());
+        }
+
+        loeschenAlleFaecher(nummerLernkartei);
+
         int ret = -1;
         SQLiteStatement stmt = null;
         try {
