@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.saulmm.myapplication.MainActivity">
 
-    <item android:title="@string/action_options" />
-    <item android:title="@string/action_about" />
+    <item
+        android:id="@+id/menu_options"
+        android:title="@string/action_options" />
+    <item
+        android:id="@+id/menu_about"
+        android:title="@string/action_about" />
 </menu>

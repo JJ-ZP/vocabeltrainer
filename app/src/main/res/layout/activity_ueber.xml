@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="it.tfobz.jj_zp.vokabeltrainer.grafik.UEber">
+    tools:context="it.tfobz.jj_zp.vokabeltrainer.Ueber">
 
     <TextView
         android:id="@+id/textView5"
