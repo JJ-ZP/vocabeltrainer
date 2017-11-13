@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Lernkartei lernkartei = new Lernkartei(-1, nameTE.getText().toString(),
                         word1TE.getText().toString(), word2TE.getText().toString(), false,
-                        false);
+                        true);
                 lernkartei.validiere();
                 if(lernkartei.getFehler() == null){
                     VokabeltrainerDB vokabeltrainerDB = VokabeltrainerDB.getInstance(view.getContext());
