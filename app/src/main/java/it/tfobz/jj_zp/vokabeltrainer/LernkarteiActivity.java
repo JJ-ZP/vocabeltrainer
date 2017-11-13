@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,12 +19,15 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import it.tfobz.jj_zp.vokabeltrainer.grafik.Play;
+
 public class LernkarteiActivity extends AppCompatActivity {
 
     private VokabeltrainerDB vokabeltrainerDB;
+    private int lernkarteinummer;
     private RecyclerView recyclerView;
     private CardAdapter lernkarteiAdapter;
-    private int lernkarteinummer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +37,12 @@ public class LernkarteiActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         vokabeltrainerDB = VokabeltrainerDB.getInstance(this);
+        lernkarteinummer = getIntent().getIntExtra("it.tfobz.jj_zp.vokabeltrainer.KarteiId", lernkarteinummer);
+        getSupportActionBar().setTitle(vokabeltrainerDB.getLernkartei(lernkarteinummer).toString());
 
         recyclerView = findViewById(R.id.listCards);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        lernkarteinummer = getIntent().getIntExtra("it.tfobz.jj_zp.vokabeltrainer.KarteiId", 0);
         lernkarteiAdapter = new CardAdapter(vokabeltrainerDB, lernkarteinummer);
         recyclerView.setAdapter(lernkarteiAdapter);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
@@ -125,6 +130,12 @@ public class LernkarteiActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void startPlaying(View view){
+        Intent intent = new Intent(view.getContext(), PlayActivity.class);
+        intent.putExtra("it.tfobz.jj_zp.vokabeltrainer.KarteiId", lernkarteinummer);
+        view.getContext().startActivity(intent);
     }
 
 }

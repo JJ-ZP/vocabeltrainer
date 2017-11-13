@@ -30,9 +30,12 @@
 
         <activity
             android:name=".LernkarteiActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop" />
 
-        <activity android:name=".PlayActivity" />
+        <activity
+            android:name=".PlayActivity"
+            android:parentActivityName=".LernkarteiActivity"/>
     </application>
 
 </manifest>

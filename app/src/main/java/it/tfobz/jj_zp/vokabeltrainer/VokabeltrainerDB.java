@@ -371,6 +371,7 @@ import java.util.List;
           ret = new Karte(nummer, wortEins, wortZwei, richtung, grossKleinschreibung);
         }
       } catch (SQLException e) {
+        Log.e("LLOG", e.getMessage());
         ret = null;
       } finally {
         try {
