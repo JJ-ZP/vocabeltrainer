@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,10 @@ public class PlayActivity extends AppCompatActivity {
     private TextView wortZweiFeld;
     private CardBackFragment cardBackFragment;
     private boolean allesGelerntFuerHeute;
+    private Karte aktuelleKarte;
+
+    private Button knopf1;
+    private Button knopf2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,8 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(vokabeltrainerDB.getLernkartei(lernkarteinummer).toString() + " - Play");
 
         wortEinsFeld = findViewById(R.id.textKarteVorne);
+        knopf1 = findViewById(R.id.gewusst_knopf);
+        knopf2 = findViewById(R.id.nicht_gewusst_knopf);
 
         //TODO - START: korrigieren
         listeZuLernenderFaecher = vokabeltrainerDB.getFaecherErinnerung(lernkarteinummer);
@@ -74,10 +81,12 @@ public class PlayActivity extends AppCompatActivity {
 
     public void getNextCard(){
         int id = (int)(Math.random() * listeZuLernenderFaecher.size());
-        Karte k = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
+        //TODO: nur karten lesen die noch gelernt werden müssen und erst dann zufällige karten lesen
+        //TODO: sobald alles für heute in dieser Lernkartei gelernt wurde und auch dann bessere Kartenauswahl
+        aktuelleKarte = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
                 .get(id).getNummer());
 
-        while(k == null){
+        while(aktuelleKarte == null){
             listeZuLernenderFaecher.remove(id);
             if(listeZuLernenderFaecher.isEmpty() && !allesGelerntFuerHeute){
                 listeZuLernenderFaecher = vokabeltrainerDB.getFaecher(lernkarteinummer);
@@ -88,12 +97,12 @@ public class PlayActivity extends AppCompatActivity {
                 return;
             }
             id = (int)(Math.random() * listeZuLernenderFaecher.size());
-            k = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
+            aktuelleKarte = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
                     .get(id).getNummer());
         }
 
         cardBackFragment = new CardBackFragment();
-        cardBackFragment.text = k.getWortZwei();
+        cardBackFragment.text = aktuelleKarte.getWortZwei();
         getFragmentManager().beginTransaction().add(R.id.untereKarteLayout, cardBackFragment).commit();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(
@@ -105,10 +114,29 @@ public class PlayActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
 
-        wortEinsFeld.setText(k.getWortEins());
+        wortEinsFeld.setText(aktuelleKarte.getWortEins());
+
+        knopf1.setVisibility(View.INVISIBLE);
+        knopf2.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void gewusst(View view){
+        vokabeltrainerDB.setKarteRichtig(aktuelleKarte);
+        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.untereKarteLayout)).commit();
+        getNextCard();
+    }
+
+    public void nichtGewusst(View view){
+        vokabeltrainerDB.setKarteFalsch(aktuelleKarte);
+        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.untereKarteLayout)).commit();
+        getNextCard();
     }
 
     public void flipCard(View view){
         getFragmentManager().popBackStack();
+
+        knopf1.setVisibility(View.VISIBLE);
+        knopf2.setVisibility(View.VISIBLE);
     }
 }
