@@ -43,6 +43,9 @@ public class PlayActivity extends AppCompatActivity {
     private VokabeltrainerDB vokabeltrainerDB;
     private int lernkarteinummer;
     private List<Fach> listeZuLernenderFaecher;
+    private List<Fach> listeAllerFaecher;
+    private List<Karte> listeZuLernenderKarten;
+    private List<Karte> listeAllerKarten;
     private TextView wortEinsFeld;
     private TextView wortZweiFeld;
     private CardBackFragment cardBackFragment;
@@ -69,36 +72,34 @@ public class PlayActivity extends AppCompatActivity {
 
         //TODO - START: korrigieren
         listeZuLernenderFaecher = vokabeltrainerDB.getFaecherErinnerung(lernkarteinummer);
-        if(listeZuLernenderFaecher.isEmpty()){
-            Log.i("LLOG", "alles gelernt fuer Heute");
-            listeZuLernenderFaecher = vokabeltrainerDB.getFaecher(lernkarteinummer);
-            allesGelerntFuerHeute = true;
-        }
+        listeAllerFaecher = vokabeltrainerDB.getFaecher(lernkarteinummer);
+        listeZuLernenderKarten = vokabeltrainerDB.getAllZuLernendeKarten(lernkarteinummer);
+        listeAllerKarten = vokabeltrainerDB.getAllKarten(lernkarteinummer);
+        allesGelerntFuerHeute = listeZuLernenderFaecher.isEmpty();
+
         //TODO - END
 
         getNextCard();
     }
 
     public void getNextCard(){
-        int id = (int)(Math.random() * listeZuLernenderFaecher.size());
-        //TODO: nur karten lesen die noch gelernt werden müssen und erst dann zufällige karten lesen
-        //TODO: sobald alles für heute in dieser Lernkartei gelernt wurde und auch dann bessere Kartenauswahl
-        aktuelleKarte = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
-                .get(id).getNummer());
-
-        while(aktuelleKarte == null){
-            listeZuLernenderFaecher.remove(id);
-            if(listeZuLernenderFaecher.isEmpty() && !allesGelerntFuerHeute){
-                listeZuLernenderFaecher = vokabeltrainerDB.getFaecher(lernkarteinummer);
+        if(!allesGelerntFuerHeute){
+            if(listeZuLernenderKarten.isEmpty()) {
                 allesGelerntFuerHeute = true;
-            }else if(listeZuLernenderFaecher.isEmpty() && allesGelerntFuerHeute){
-                Toast.makeText(this, "Keine Karten zum Lernen", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
+                Toast.makeText(this, "Alles gelernt für heute!", Toast.LENGTH_SHORT).show();
+                for (Fach f : listeZuLernenderFaecher) {
+                    vokabeltrainerDB.setGelerntFach(f.getNummer());
+                }
+            }else{
+                aktuelleKarte = listeZuLernenderKarten.get(0);
+                listeZuLernenderKarten.remove(0);
             }
-            id = (int)(Math.random() * listeZuLernenderFaecher.size());
-            aktuelleKarte = vokabeltrainerDB.getZufaelligeKarte(lernkarteinummer, listeZuLernenderFaecher
-                    .get(id).getNummer());
+        }
+
+        if(allesGelerntFuerHeute){
+            //TODO: make it less random so that it appears more random
+            int id = (int) (Math.random() * listeAllerKarten.size());
+            aktuelleKarte = listeAllerKarten.get(id);
         }
 
         cardBackFragment = new CardBackFragment();

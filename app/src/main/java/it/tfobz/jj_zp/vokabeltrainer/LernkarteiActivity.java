@@ -34,6 +34,8 @@ public class LernkarteiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lernkartei);
 
+        MyNotificationManager.showNotification(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         vokabeltrainerDB = VokabeltrainerDB.getInstance(this);

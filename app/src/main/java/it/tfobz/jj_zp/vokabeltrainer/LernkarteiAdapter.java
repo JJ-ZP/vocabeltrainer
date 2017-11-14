@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -60,6 +61,12 @@ public class LernkarteiAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         TextView name = ((ViewHolder)holder).mTextView.findViewById(R.id.listeNamen);
         TextView beschreibung = ((ViewHolder)holder).mTextView.findViewById(R.id.listeBeschreibung);
+        ImageView image = ((ViewHolder)holder).mTextView.findViewById(R.id.learnNotification);
+
+        if(db.getLernkarteienErinnerung().contains(db.getLernkarteien().get(position))){
+            image.setVisibility(View.VISIBLE);
+        }
+
         name.setText(db.getLernkarteien().get(position).toString());
         beschreibung.setText(db.getLernkarteien().get(position).getWortEinsBeschreibung() + " - " +
                 db.getLernkarteien().get(position).getWortZweiBeschreibung());

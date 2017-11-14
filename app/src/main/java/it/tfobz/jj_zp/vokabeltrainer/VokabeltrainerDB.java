@@ -126,6 +126,23 @@ import java.util.List;
       return karten;
     }
 
+    public ArrayList<Karte> getAllZuLernendeKarten(int lernkarteinummer){
+      ArrayList<Karte> karten = new ArrayList<Karte>();
+      for (Fach f : getFaecherErinnerung(lernkarteinummer)) {
+        karten.addAll(getKarten(f.getNummer()));
+      }
+      return karten;
+    }
+
+    public int setGelerntFach(int fachnummer){
+      String sql =
+              "UPDATE faecher " +
+                      "  SET fgelerntam =  " + new Date().getTime() +
+                      "  WHERE fnummer = " + fachnummer + ";";
+      SQLiteStatement stmt = getReadableDatabase().compileStatement(sql);
+      return stmt.executeUpdateDelete();
+    }
+
     //--------------------------------------> END
 
     public void erstellenTabellen() {
@@ -451,6 +468,7 @@ import java.util.List;
                     ret = -2;
                 else {
                     int fachNummer = c.getInt(0);
+                    /*
                     sql =
                             "UPDATE faecher " +
                             "  SET fgelerntam =  " + new Date().getTime() +
@@ -460,14 +478,15 @@ import java.util.List;
                             "      WHERE knummer = " + karte.getNummer() + ");";
                     stmt = getReadableDatabase().compileStatement(sql);
                     if (stmt.executeUpdateDelete() == 1) {
-                        sql =
-                                "UPDATE karten " +
-                                "  SET fnummer = " + fachNummer +
-                                "  WHERE knummer = " + karte.getNummer() + ";";
-                        stmt = getReadableDatabase().compileStatement(sql);
-                        if (stmt.executeUpdateDelete() == 1)
-                            ret = 0;
-                    }
+                    */
+
+                    sql =   "UPDATE karten " +
+                            "  SET fnummer = " + fachNummer +
+                            "  WHERE knummer = " + karte.getNummer() + ";";
+                    stmt = getReadableDatabase().compileStatement(sql);
+                    if (stmt.executeUpdateDelete() == 1)
+                        ret = 0;
+                    //}
                 }
             }
         } catch (SQLException e) {
@@ -517,6 +536,11 @@ import java.util.List;
                         "  SET fnummer = " + fachNummer +
                         "  WHERE knummer = " + karte.getNummer() + ";";
                 stmt = getReadableDatabase().compileStatement(sql);
+                //OWN
+                if (stmt.executeUpdateDelete() == 1)
+                  ret = 0;
+
+                /*
                 if (stmt.executeUpdateDelete() == 1) {
                     sql =
                             "UPDATE faecher " +
@@ -529,6 +553,7 @@ import java.util.List;
                     if (stmt.executeUpdateDelete() == 1)
                         ret = 0;
                 }
+                */
             }
         } catch (SQLException e) {
             ret = -1;
