@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,7 +59,7 @@ public class LernkarteiActivity extends AppCompatActivity {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(LernkarteiActivity.this);
+                /* AlertDialog.Builder builder = new AlertDialog.Builder(LernkarteiActivity.this);
                 builder.setTitle("Karte wirklich löschen?");
                 builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
@@ -82,7 +83,25 @@ public class LernkarteiActivity extends AppCompatActivity {
                     }
                 });
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
+                int pos = viewHolder.getAdapterPosition();
+                final Karte karte = vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos);
+                Log.i("LLOG","pos: " + pos);
+                vokabeltrainerDB.loeschenKarte(vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos).getNummer());
+                lernkarteiAdapter.notifyDataSetChanged();
+                Snackbar mySnackbar = Snackbar.make(findViewById(R.id.activityLernkarteiLayout),
+                        "Karte gelöscht", Snackbar.LENGTH_LONG);
+                mySnackbar.setAction("Rückgängig", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //TODO: Karte an richtiger Position und in richtigen Fach einfügen.
+                        Karte karte2 = new Karte(-1,karte.getWortEins(),karte.getWortZwei(),karte.getRichtung(),
+                                karte.getGrossKleinschreibung());
+                        vokabeltrainerDB.hinzufuegenKarte(lernkarteinummer, karte2);
+                        lernkarteiAdapter.notifyDataSetChanged();
+                    }
+                });
+                mySnackbar.show();
             }
         };
 
