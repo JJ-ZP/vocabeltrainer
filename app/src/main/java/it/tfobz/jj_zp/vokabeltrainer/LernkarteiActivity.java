@@ -63,20 +63,26 @@ public class LernkarteiActivity extends AppCompatActivity {
                 builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        lernkarteiAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setPositiveButton("Löschen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int pos = viewHolder.getAdapterPosition();
+                        Log.i("LLOG","pos: " + pos);
                         vokabeltrainerDB.loeschenKarte(vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos).getNummer());
+                        lernkarteiAdapter.notifyDataSetChanged();
+                    }
+                });
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
                         lernkarteiAdapter.notifyDataSetChanged();
                     }
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-                lernkarteiAdapter.notifyDataSetChanged();
             }
         };
 

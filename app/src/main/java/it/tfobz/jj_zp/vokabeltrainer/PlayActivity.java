@@ -129,13 +129,15 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void gewusst(View view){
-        vokabeltrainerDB.setKarteRichtig(aktuelleKarte);
+        if (!allesGelerntFuerHeute)
+            vokabeltrainerDB.setKarteRichtig(aktuelleKarte);
         getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.untereKarteLayout)).commit();
         getNextCard();
     }
 
     public void nichtGewusst(View view){
-        vokabeltrainerDB.setKarteFalsch(aktuelleKarte);
+        if (!allesGelerntFuerHeute)
+            vokabeltrainerDB.setKarteFalsch(aktuelleKarte);
         getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.untereKarteLayout)).commit();
         getNextCard();
     }
