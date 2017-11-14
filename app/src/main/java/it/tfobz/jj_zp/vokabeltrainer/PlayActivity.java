@@ -83,6 +83,12 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void getNextCard(){
+        if(listeAllerKarten.isEmpty()){
+            Toast.makeText(this, "Keine Karten vorhanden!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         if(!allesGelerntFuerHeute){
             if(listeZuLernenderKarten.isEmpty()) {
                 allesGelerntFuerHeute = true;
