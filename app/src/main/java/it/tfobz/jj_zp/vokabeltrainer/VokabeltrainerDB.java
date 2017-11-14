@@ -56,7 +56,8 @@ import java.util.List;
   protected static final String CREATE_KARTEN = "CREATE TABLE karten( "
           + "  knummer INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
           + "  kworteins VARCHAR(100) NOT NULL, "
-          + "  kwortzwei VARCHAR(100) NOT NULL, "
+          + "  kwortzwei VARCHAR(100) NOT NULL,"
+          + "  kgrosskleinschreibung BOOLEAN DEFAULT 0 NOT NULL, "
           + "  fnummer INTEGER NOT NULL, "
           + "  FOREIGN KEY (fnummer) REFERENCES faecher(fnummer) "
           + "    ON DELETE CASCADE ON UPDATE CASCADE " + "  );";
@@ -848,9 +849,9 @@ import java.util.List;
               ret = -5;
             else {
               sql =
-                      "INSERT INTO karten(kworteins, kwortzwei, fnummer) " +
+                      "INSERT INTO karten(kworteins, kwortzwei, fnummer, kgrosskleinschreibung) " +
                       "  VALUES('" + karte.getWortEins() + "', '" + karte.getWortZwei() + "', " +
-                      faecher.get(0).getNummer() + ");";
+                      faecher.get(0).getNummer() + ", " + (karte.getGrossKleinschreibung() ? 1 : 0) + ");";
               stmt = getReadableDatabase().compileStatement(sql);
               int nummer = (int)stmt.executeInsert();
               if (nummer == 0)
@@ -861,6 +862,7 @@ import java.util.List;
               }
             }
           } catch (SQLException e) {
+            Log.e("LLOG", e.getMessage());
             ret = -1;
           } finally {
             try {
@@ -929,7 +931,8 @@ import java.util.List;
             sql =
                     "UPDATE karten " +
                     "  SET kworteins = '" + karte.getWortEins() + "', " +
-                    "    kwortzwei = '" + karte.getWortZwei() + "' " +
+                    "    kwortzwei = '" + karte.getWortZwei() + "', " +
+                    "    kgrosskleinschreibung = '" + (karte.getGrossKleinschreibung()? 1 : 0) + "' " +
                     "  WHERE knummer = " + karte.getNummer() + ";";
             stmt = getReadableDatabase().compileStatement(sql);
             if (stmt.executeUpdateDelete() == 0)
@@ -1125,7 +1128,7 @@ import java.util.List;
         Cursor c = null;
         try {
           String sql =
-                  "SELECT k.knummer, kworteins, kwortzwei, l.lrichtung, l.lgrosskleinschreibung " +
+                  "SELECT k.knummer, kworteins, kwortzwei, l.lrichtung, k.kgrosskleinschreibung " +
                   "  FROM karten k, faecher f, lernkarteien l " +
                   "  WHERE k.fnummer = f.fnummer AND " +
                   "    f.lnummer = l.lnummer AND " +
