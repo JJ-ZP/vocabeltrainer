@@ -155,8 +155,8 @@ import java.util.List;
       Cursor c = null;
       try {
         String sql =
-                "SELECT k.fnummer" +
-                        "FROM karten WHERE k.knummer = " + karte.getNummer() + ";";
+                "SELECT fnummer" +
+                        " FROM karten WHERE knummer = " + karte.getNummer() + ";";
         c = getReadableDatabase().rawQuery(sql, null);
         if (c.moveToNext())
           return c.getInt(0);

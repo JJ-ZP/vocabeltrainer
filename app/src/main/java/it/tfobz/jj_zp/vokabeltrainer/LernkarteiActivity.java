@@ -56,34 +56,9 @@ public class LernkarteiActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                /* AlertDialog.Builder builder = new AlertDialog.Builder(LernkarteiActivity.this);
-                builder.setTitle("Karte wirklich löschen?");
-                builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        lernkarteiAdapter.notifyDataSetChanged();
-                    }
-                });
-                builder.setPositiveButton("Löschen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int pos = viewHolder.getAdapterPosition();
-                        Log.i("LLOG","pos: " + pos);
-                        vokabeltrainerDB.loeschenKarte(vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos).getNummer());
-                        lernkarteiAdapter.notifyDataSetChanged();
-                    }
-                });
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        lernkarteiAdapter.notifyDataSetChanged();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();*/
                 int pos = viewHolder.getAdapterPosition();
                 final Karte karte = vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos);
+                final int fachnummer = vokabeltrainerDB.getFachnummer(karte);
                 Log.i("LLOG","pos: " + pos);
                 vokabeltrainerDB.loeschenKarte(vokabeltrainerDB.getAllKarten(lernkarteinummer).get(pos).getNummer());
                 lernkarteiAdapter.notifyDataSetChanged();
@@ -92,10 +67,11 @@ public class LernkarteiActivity extends AppCompatActivity {
                 mySnackbar.setAction("Rückgängig", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //TODO: Karte an richtiger Position und in richtigen Fach einfügen.
                         Karte karte2 = new Karte(-1,karte.getWortEins(),karte.getWortZwei(),karte.getRichtung(),
                                 karte.getGrossKleinschreibung());
                         vokabeltrainerDB.hinzufuegenKarte(lernkarteinummer, karte2);
+                        Log.i("LLOG","Fachnummer: " + fachnummer);
+                        vokabeltrainerDB.setFachnummer(karte , fachnummer);
                         lernkarteiAdapter.notifyDataSetChanged();
                     }
                 });
