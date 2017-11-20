@@ -7,8 +7,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -30,6 +32,7 @@ public class MyNotificationManager extends BroadcastReceiver{
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.SECOND, 0);
 
+
         Intent intent = new Intent(context, MyNotificationManager.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -39,6 +42,18 @@ public class MyNotificationManager extends BroadcastReceiver{
                 AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
+    public static void cancelDaily(Context context){
+        try {
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, MyNotificationManager.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(pendingIntent);
+        } catch ( Exception e) {
+            Log.e("LLOG", e.getMessage());
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         showNotifications(context);
@@ -46,8 +61,11 @@ public class MyNotificationManager extends BroadcastReceiver{
 
     public static void showNotifications(Context context){
         VokabeltrainerDB db = VokabeltrainerDB.getInstance(context);
-        if(!db.getLernkarteienErinnerung().isEmpty()){
-            showNotification(context);
+        for(Lernkartei l : db.getLernkarteien()){
+            if(!db.getAllZuLernendeKarten(l.getNummer()).isEmpty()){
+                showNotification(context);
+                return;
+            }
         }
     }
 
@@ -59,8 +77,8 @@ public class MyNotificationManager extends BroadcastReceiver{
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(R.mipmap.small_icon)
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
+                .setSmallIcon(R.mipmap.small_icon)
                 .setVibrate(new long[]{0, 300, 0, 300})
                 .setLights(Color.WHITE, 1000, 5000)
                 .setContentIntent(pendingIntent)

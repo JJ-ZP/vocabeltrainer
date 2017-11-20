@@ -135,6 +135,7 @@ import java.util.List;
     }
 
     public int setGelerntFach(int fachnummer){
+      Log.i("LLOG", "Setze zuletzt gelernt bei Fach "+fachnummer+" auf "+new Date().toString());
       String sql =
               "UPDATE faecher " +
                       "  SET fgelerntam =  " + new Date().getTime() +
@@ -476,21 +477,22 @@ import java.util.List;
         SQLiteStatement stmt = null;
         try {
             if (karte != null && karte.getNummer() != -1) {
-                String sql =
-                        "SELECT fnummer " +
-                        "  FROM faecher f2 " +
-                        "  WHERE fnummer > " +
-                        "    (SELECT f1. fnummer " +
-                        "      FROM karten k1, faecher f1 " +
-                        "      WHERE k1.fnummer = f1.fnummer AND " +
-                        "        f2.lnummer = f1.lnummer AND " +
-                        "        knummer = " + karte.getNummer() + ") " +
-                        "  ORDER BY fnummer;";
-                c = getReadableDatabase().rawQuery(sql, null);
-                if (!c.moveToNext())
-                    // Es existiert noch kein Fach hinter dem Fach in dem Karte steck
-                    ret = -2;
-                else {
+              String sql =
+                      "SELECT fnummer " +
+                              "  FROM faecher f2 " +
+                              "  WHERE fnummer > " +
+                              "    (SELECT f1. fnummer " +
+                              "      FROM karten k1, faecher f1 " +
+                              "      WHERE k1.fnummer = f1.fnummer AND " +
+                              "        f2.lnummer = f1.lnummer AND " +
+                              "        knummer = " + karte.getNummer() + ") " +
+                              "  ORDER BY fnummer;";
+              c = getReadableDatabase().rawQuery(sql, null);
+              if (!c.moveToNext()){
+                // Es existiert noch kein Fach hinter dem Fach in dem Karte steck
+                Log.e("LLOG", "Letztes Fach erreicht");
+                ret = -2;
+              }else {
                     int fachNummer = c.getInt(0);
                     /*
                     sql =
@@ -514,6 +516,7 @@ import java.util.List;
                 }
             }
         } catch (SQLException e) {
+          Log.e("LLOG", e.getMessage());
             ret = -1;
         } finally {
             try {

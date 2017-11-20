@@ -57,6 +57,9 @@
     <string name="r_ckseite">Rückseite:</string>
     <string name="vorderseite">Vorderseite:</string>
     <string name="txt">txt...</string>
+    <string name="erinnerungsID">erinnerungen</string>
+    <string name="showExtraInformation">showExtraInformation</string>
+    <string name="default_preference">default_preference</string>
 
     <!-- Example settings for Notifications -->
 

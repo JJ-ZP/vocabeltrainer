@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayActivity extends AppCompatActivity {
@@ -48,6 +49,7 @@ public class PlayActivity extends AppCompatActivity {
     private List<Karte> listeAllerKarten;
     private TextView wortEinsFeld;
     private TextView wortZweiFeld;
+    private TextView infoText;
     private CardBackFragment cardBackFragment;
     private boolean allesGelerntFuerHeute;
     private Karte aktuelleKarte;
@@ -67,15 +69,23 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(vokabeltrainerDB.getLernkartei(lernkarteinummer).toString() + " - Play");
 
         wortEinsFeld = findViewById(R.id.textKarteVorne);
+        infoText = findViewById(R.id.infoTextPlay);
         knopf1 = findViewById(R.id.gewusst_knopf);
         knopf2 = findViewById(R.id.nicht_gewusst_knopf);
 
+        if(!getSharedPreferences(getString(R.string.default_preference),MODE_PRIVATE).getBoolean(getString(R.string.showExtraInformation), false)) {
+            infoText.setVisibility(View.INVISIBLE);
+            Log.i("LLOG", "Zusatzinfos deaktiviert");
+        } else
+            infoText.setVisibility(View.VISIBLE);
+
         //TODO - START: korrigieren
-        listeZuLernenderFaecher = vokabeltrainerDB.getFaecherErinnerung(lernkarteinummer);
+        //listeZuLernenderFaecher = vokabeltrainerDB.getFaecherErinnerung(lernkarteinummer);
+        listeZuLernenderFaecher = new ArrayList<>();
         listeAllerFaecher = vokabeltrainerDB.getFaecher(lernkarteinummer);
         listeZuLernenderKarten = vokabeltrainerDB.getAllZuLernendeKarten(lernkarteinummer);
         listeAllerKarten = vokabeltrainerDB.getAllKarten(lernkarteinummer);
-        allesGelerntFuerHeute = listeZuLernenderFaecher.isEmpty();
+        allesGelerntFuerHeute = listeZuLernenderKarten.isEmpty();
 
         //TODO - END
 
@@ -92,12 +102,15 @@ public class PlayActivity extends AppCompatActivity {
         if(!allesGelerntFuerHeute){
             if(listeZuLernenderKarten.isEmpty()) {
                 allesGelerntFuerHeute = true;
-                Toast.makeText(this, "Alles gelernt für heute!", Toast.LENGTH_SHORT).show();
                 for (Fach f : listeZuLernenderFaecher) {
-                    vokabeltrainerDB.setGelerntFach(f.getNummer());
+                    int ret = vokabeltrainerDB.setGelerntFach(f.getNummer());
+                    Log.i("LLOG", "zuletzt gelernt geändert bei: "+ret);
                 }
+                Toast.makeText(this, "Alles gelernt für heute!", Toast.LENGTH_SHORT).show();
             }else{
                 aktuelleKarte = listeZuLernenderKarten.get(0);
+                listeZuLernenderFaecher.add(
+                        vokabeltrainerDB.getFach(vokabeltrainerDB.getFachnummer(aktuelleKarte)));
                 listeZuLernenderKarten.remove(0);
             }
         }
@@ -122,6 +135,13 @@ public class PlayActivity extends AppCompatActivity {
                 .commit();
 
         wortEinsFeld.setText(aktuelleKarte.getWortEins());
+        infoText.setText("Groß/Kleinschreibung beachten: "+ aktuelleKarte.getGrossKleinschreibung()+"\n\nFachnummer: "+
+                vokabeltrainerDB.getFachnummer(aktuelleKarte) +
+                "\nabfragen alle "+
+                vokabeltrainerDB.getFach(vokabeltrainerDB.getFachnummer(aktuelleKarte))
+                        .getErinnerungsIntervall() + " Tage\nzuletzt gelernt am "+
+                vokabeltrainerDB.getFach(vokabeltrainerDB.getFachnummer(aktuelleKarte))
+                        .getGelerntAmEuropaeischString()+"\n\nEndlosmodus: "+allesGelerntFuerHeute);
 
         knopf1.setVisibility(View.INVISIBLE);
         knopf2.setVisibility(View.INVISIBLE);

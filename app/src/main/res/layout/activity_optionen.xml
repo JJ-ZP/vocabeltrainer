@@ -7,30 +7,46 @@
     tools:context="it.tfobz.jj_zp.vokabeltrainer.Optionen">
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/erinnerungsSwitch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:checked="true"
+        android:checked="false"
+        android:onClick="setErinnerungen"
         android:text="@string/pref_get_memories"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/extraInfoSwitch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:checked="false"
-        android:text="Zusätzliche Informationen anzeigen"
+        android:onClick="setExtraInfo"
+        android:text="Entwickler-Modus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/erinnerungsSwitch" />
+
+    <Button
+        android:id="@+id/dbResetButton"
+        android:layout_width="182dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="resetDatabase"
+        android:text="Datenbank zurücksetzen"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/extraInfoSwitch" />
 
 </android.support.constraint.ConstraintLayout>
