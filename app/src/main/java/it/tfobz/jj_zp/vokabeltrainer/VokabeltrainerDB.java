@@ -714,8 +714,10 @@ import java.util.List;
         try {
             if (lernkartei != null && lernkartei.getNummer() == -1) {
                 lernkartei.validiere();
-                if (lernkartei.getFehler() != null)
-                    ret = -2;
+                if (lernkartei.getFehler() != null) {
+                  ret = -2;
+                  Log.i("LLOG","lernkartei.getFehler() == true");
+                }
                 else {
                     String sql =
                             "INSERT INTO lernkarteien(lbeschreibung, lworteinsbeschreibung, " +
