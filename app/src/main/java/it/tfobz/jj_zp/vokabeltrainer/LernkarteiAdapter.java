@@ -63,7 +63,8 @@ public class LernkarteiAdapter extends RecyclerView.Adapter {
         TextView beschreibung = ((ViewHolder)holder).mTextView.findViewById(R.id.listeBeschreibung);
         ImageView image = ((ViewHolder)holder).mTextView.findViewById(R.id.learnNotification);
 
-        if(db.getLernkarteienErinnerung().contains(db.getLernkarteien().get(position))){
+        if(db.getLernkarteienErinnerung().contains(db.getLernkarteien().get(position)) &&
+                !db.getAllKarten(db.getLernkarteien().get(position).getNummer()).isEmpty()){
             image.setVisibility(View.VISIBLE);
         }
 

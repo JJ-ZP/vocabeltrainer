@@ -143,6 +143,30 @@ import java.util.List;
       return stmt.executeUpdateDelete();
     }
 
+    public int setFachnummer(Karte karte, int fachnummer){
+      String sql =   "UPDATE karten " +
+              "  SET fnummer = " + fachnummer +
+              "  WHERE knummer = " + karte.getNummer() + ";";
+      SQLiteStatement stmt = getReadableDatabase().compileStatement(sql);
+      return stmt.executeUpdateDelete();
+    }
+
+    public int getFachnummer(Karte karte){
+      Cursor c = null;
+      try {
+        String sql =
+                "SELECT k.fnummer" +
+                        "FROM karten WHERE k.knummer = " + karte.getNummer() + ";";
+        c = getReadableDatabase().rawQuery(sql, null);
+        if (c.moveToNext())
+          return c.getInt(0);
+      } finally {
+        if( c != null)
+          c.close();
+      }
+      return -1;
+    }
+
     //--------------------------------------> END
 
     public void erstellenTabellen() {
@@ -464,7 +488,7 @@ import java.util.List;
                         "  ORDER BY fnummer;";
                 c = getReadableDatabase().rawQuery(sql, null);
                 if (!c.moveToNext())
-                    // Es existiert noch kein Fach hinter dem Fach in dem Karte steckt
+                    // Es existiert noch kein Fach hinter dem Fach in dem Karte steck
                     ret = -2;
                 else {
                     int fachNummer = c.getInt(0);
